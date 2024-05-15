@@ -3,12 +3,20 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
 use App\Repository\ParticipantRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, strategy: 'ipartial', properties: ['role', 'session.titre', 'utilisateur.nni'])]
+#[ApiFilter(DateFilter::class, properties: ['dateAjout'])]
+#[ApiFilter(OrderFilter::class, properties: ['dateAjout', 'role'])]
 class Participant
 {
     #[ORM\Id]
@@ -30,14 +38,14 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $role = null;
 
-    public function getId(): ?int
+    public function getIdParticipant(): ?int
     {
-        return $this->id;
+        return $this->idParticipant;
     }
 
     public function getSession(): ?Session
     {
-        return $this->Session;
+        return $this->session;
     }
 
     public function setSession(?Session $session): static

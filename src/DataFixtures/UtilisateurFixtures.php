@@ -66,13 +66,13 @@ class UtilisateurFixtures extends Fixture
         foreach ($listUsers as $userData) {
             $user = new Utilisateur();
             $user->setNni($userData['nni']);
-            $user->setMdp(password_hash($userData['mdp'], PASSWORD_DEFAULT));
+            $user->setMdp($userData['mdp']);
             $user->setNom($userData['nom']);
             $user->setPrenom($userData['prenom']);
             $user->setEmail($userData['email']);
             $user->setNumTelephone($userData['numTelephone']);
             $user->setLstRoles($userData['lstRoles']);
-            $user->setActive($userData['isActive']);
+            $user->setIsActive($userData['isActive']);
 
             $manager->persist($user);
         }

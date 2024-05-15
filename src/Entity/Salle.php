@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+
 use App\Repository\SalleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, strategy: 'ipartial', properties: ['nomSalle', 'ville', 'adresse', 'codePostal'])]
+#[ApiFilter(OrderFilter::class, properties: ['nomSalle', 'tailleSalle', 'ville', 'codePostal'])]
+#[ApiFilter(NumericFilter::class, properties: ['tailleSalle'])]
 class Salle
 {
     #[ORM\Id]
@@ -29,13 +38,13 @@ class Salle
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column]
-    private ?int $codePostal = null;
+    #[ORM\Column(length: 5)]
+    private ?string $codePostal = null;
 
     /**
      * @var Collection<int, Session>
      */
-    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'Salle')]
+    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'salle')]
     private Collection $lstSessions;
 
     public function __construct()
@@ -96,12 +105,12 @@ class Salle
         return $this;
     }
 
-    public function getCodePostal(): ?int
+    public function getCodePostal(): ?string
     {
         return $this->codePostal;
     }
 
-    public function setCodePostal(int $codePostal): static
+    public function setCodePostal(string $codePostal): static
     {
         $this->codePostal = $codePostal;
 

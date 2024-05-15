@@ -17,14 +17,14 @@ class SalleFixtures extends Fixture
                 'nomSalle' => 'Salle A',
                 'ville' => 'Paris',
                 'adresse' => '1 Rue de Paris',
-                'codePostal' => 75004,
+                'codePostal' => "75004",
             ],
             [
                 'tailleSalle' => 30,
                 'nomSalle' => 'Salle B',
                 'ville' => 'Noisy-Le-Grand',
                 'adresse' => '28 Rue de Paul Fort',
-                'codePostal' => 93420,
+                'codePostal' => "93420",
             ],
         ];
 

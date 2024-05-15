@@ -3,16 +3,26 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+
 use App\Repository\UtilisateurRepository;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ApiResource]
-class Utilisateur
+#[ORM\EntityListeners(["App\EventListener\PasswordListener"])] 
+#[ApiFilter(SearchFilter::class, strategy: 'ipartial', properties: ['nom', 'prenom', 'email', 'numTelephone'])]
+#[ApiFilter(OrderFilter::class, properties: ['nom', 'prenom', 'email'])]
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private ?string $nni = null;
 
     #[ORM\Column(length: 255)]
@@ -72,6 +82,8 @@ class Utilisateur
         return $this;
     }
 
+
+
     public function getPrenom(): ?string
     {
         return $this->prenom;
@@ -120,15 +132,38 @@ class Utilisateur
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function getIsActive(): ?bool
     {
         return $this->isActive;
     }
 
-    public function setActive(bool $isActive): static
+    public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
 
         return $this;
+    }
+    public function getRoles() : array
+    {
+        return $this->lstRoles ?? [];
+    }
+
+    public function getPassword() : string
+    {
+        return $this->mdp;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function getUserIdentifier() : string
+    {
+        return $this->nni;
+    }
+
+    public function eraseCredentials()
+    {
     }
 }
